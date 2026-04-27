@@ -48,7 +48,7 @@ Agar siz backend va frontendni bitta joyda (Render.com) host qilmoqchi bo'lsangi
 2. Ushbu GitHub repozitoriyani tanlang.
 3. **Root Directory:** `backend`
 4. **Environment:** `Node`
-5. **Build Command:** `npm install && cd ../frontend && npm install && npm run build`
+5. **Build Command:** `npm install && cd ../frontend && npm install --include=dev && npm run build`
 6. **Start Command:** `node server.js`
 7. **Environment Variables:** `MONGO_URI` (MongoDB Atlas manzilingiz) va `NODE_ENV=production` qo'shing.
 
