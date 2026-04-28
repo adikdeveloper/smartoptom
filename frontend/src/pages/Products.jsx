@@ -3,7 +3,7 @@ import api from '../api/axios';
 import toast from 'react-hot-toast';
 
 const empty = { name: '', category: '19L', buyPrice: '', sellPrice: '', wholesalePrice: '', description: '' };
-const cats = ['19L', '10L', '5L', '1.5L', '0.5L', 'boshqa'];
+const cats = ['19L', '10L', '5L', '1.5L', '1.0L', '0.5L'];
 
 export default function Products() {
   const [list, setList] = useState([]);

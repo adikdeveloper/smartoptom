@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema(
     name: { type: String, required: true, trim: true },
     category: {
       type: String,
-      enum: ['19L', '10L', '5L', '1.5L', '0.5L', 'boshqa'],
+      enum: ['19L', '10L', '5L', '1.5L', '1.0L', '0.5L'],
       default: '19L',
     },
     buyPrice: { type: Number, required: true }, // kelish narxi
