@@ -11,6 +11,7 @@ export default function Products() {
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState(null);
+  const [saving, setSaving] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -23,14 +24,19 @@ export default function Products() {
 
   const openAdd = () => { setForm(empty); setEditId(null); setModal(true); };
   const openEdit = (p) => { setForm(p); setEditId(p._id); setModal(true); };
-  const close = () => setModal(false);
+  const close = () => { setModal(false); setSaving(false); };
 
   const save = async () => {
+    if (saving) return;
+    setSaving(true);
     try {
       if (editId) { await api.put(`/products/${editId}`, form); toast.success('Yangilandi'); }
       else { await api.post('/products', form); toast.success("Mahsulot qo'shildi"); }
       close(); load();
-    } catch { toast.error('Xato'); }
+    } catch { 
+      toast.error('Xato'); 
+      setSaving(false);
+    }
   };
 
   const del = async (id) => {
@@ -123,7 +129,9 @@ export default function Products() {
             </div>
             <div className="modal-footer">
               <button className="btn btn-ghost" onClick={close}>Bekor</button>
-              <button className="btn btn-primary" onClick={save}>💾 Saqlash</button>
+              <button className="btn btn-primary" onClick={save} disabled={saving} style={{ opacity: saving ? 0.7 : 1 }}>
+                {saving ? '⏳ Saqlanmoqda...' : '💾 Saqlash'}
+              </button>
             </div>
           </div>
         </div>
