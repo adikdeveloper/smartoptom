@@ -95,6 +95,7 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [customers, setCustomers] = useState([]);
   const [products, setProducts] = useState([]);
+  const [stocks, setStocks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
   const [form, setForm] = useState(emptyOrder);
@@ -106,10 +107,10 @@ export default function Orders() {
   const load = async () => {
     setLoading(true);
     try {
-      const [o, c, p] = await Promise.all([
-        api.get('/orders'), api.get('/customers'), api.get('/products'),
+      const [o, c, p, s] = await Promise.all([
+        api.get('/orders'), api.get('/customers'), api.get('/products'), api.get('/stock'),
       ]);
-      setOrders(o.data); setCustomers(c.data); setProducts(p.data);
+      setOrders(o.data); setCustomers(c.data); setProducts(p.data); setStocks(s.data);
     } catch { toast.error('Xato'); }
     finally { setLoading(false); }
   };
@@ -149,6 +150,13 @@ export default function Orders() {
     if (!form.customer) return toast.error('Mijoz tanlang');
     if (items.some(i => !i.product)) return toast.error('Barcha mahsulotlarni tanlang');
     
+    const hasStockError = items.some(item => {
+      if (!item.product) return false;
+      const stockItem = stocks.find(s => s.product?._id === item.product);
+      return item.quantity > (stockItem?.quantity || 0);
+    });
+    if (hasStockError) return toast.error("Skladda yetarli mahsulot yo'q!");
+
     setSaving(true);
     try {
       const customer = customers.find(c => c._id === form.customer);
@@ -255,26 +263,44 @@ export default function Orders() {
 
             {/* Mahsulotlar */}
             <div style={{ margin: '4px 0 10px', fontWeight: 600, fontSize: 14 }}>📦 Mahsulotlar</div>
-            {items.map((item, i) => (
-              <div key={i} style={{
-                display: 'grid', gridTemplateColumns: '2.5fr 1fr 1.2fr auto',
-                gap: 8, marginBottom: 8, alignItems: 'center',
-              }}>
-                {/* Qidiruv bilan mahsulot tanlash */}
-                <ProductSearch
-                  products={products}
-                  value={item.product}
-                  onSelect={(p) => selectProduct(i, p)}
-                />
-                <input className="form-control" type="number" placeholder="Miqdor" min="1"
-                  value={item.quantity}
-                  onChange={e => updateItem(i, 'quantity', +e.target.value)} />
-                <input className="form-control" type="number" placeholder="Narx"
-                  value={item.price}
-                  onChange={e => updateItem(i, 'price', +e.target.value)} />
-                <button className="btn btn-danger btn-sm" onClick={() => removeItem(i)}>✕</button>
-              </div>
-            ))}
+            {items.map((item, i) => {
+              const stockItem = stocks.find(s => s.product?._id === item.product);
+              const available = stockItem?.quantity || 0;
+              const hasError = item.product && item.quantity > available;
+
+              return (
+                <div key={i} style={{ marginBottom: 12 }}>
+                  <div style={{
+                    display: 'grid', gridTemplateColumns: '2.5fr 1fr 1.2fr auto',
+                    gap: 8, alignItems: 'center',
+                  }}>
+                    {/* Qidiruv bilan mahsulot tanlash */}
+                    <ProductSearch
+                      products={products}
+                      value={item.product}
+                      onSelect={(p) => selectProduct(i, p)}
+                    />
+                    <input className="form-control" type="number" placeholder="Miqdor" min="1"
+                      value={item.quantity}
+                      onChange={e => updateItem(i, 'quantity', +e.target.value)}
+                      style={hasError ? { borderColor: '#ef4444', boxShadow: '0 0 0 1px rgba(239,68,68,0.2)' } : {}}
+                    />
+                    <input className="form-control" type="number" placeholder="Narx"
+                      value={item.price}
+                      onChange={e => updateItem(i, 'price', +e.target.value)} />
+                    <button className="btn btn-danger btn-sm" onClick={() => removeItem(i)}>✕</button>
+                  </div>
+                  {hasError && (
+                    <div style={{
+                      color: '#f87171', fontSize: 11, fontWeight: 600, 
+                      marginTop: 4, paddingLeft: 4, display: 'flex', alignItems: 'center', gap: 4
+                    }}>
+                      ⚠️ Skladda yetarli emas! Mavjud: {available} ta
+                    </div>
+                  )}
+                </div>
+              );
+            })}
 
             {/* Subtotal */}
             {items.map((item, i) => item.product && (
