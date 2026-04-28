@@ -101,6 +101,8 @@ export default function Orders() {
   const [items, setItems] = useState([{ product: '', quantity: 1, price: 0, total: 0 }]);
   const [receipt, setReceipt] = useState(null); // chek uchun
 
+  const [saving, setSaving] = useState(false);
+
   const load = async () => {
     setLoading(true);
     try {
@@ -118,6 +120,7 @@ export default function Orders() {
     setForm(emptyOrder);
     setItems([{ product: '', quantity: 1, price: 0, total: 0 }]);
     setModal(true);
+    setSaving(false);
   };
 
   const updateItem = (i, field, val) => {
@@ -142,8 +145,11 @@ export default function Orders() {
   const fmt = n => new Intl.NumberFormat('uz-UZ').format(n);
 
   const save = async () => {
+    if (saving) return;
     if (!form.customer) return toast.error('Mijoz tanlang');
     if (items.some(i => !i.product)) return toast.error('Barcha mahsulotlarni tanlang');
+    
+    setSaving(true);
     try {
       const customer = customers.find(c => c._id === form.customer);
       const payload = {
@@ -173,7 +179,10 @@ export default function Orders() {
         deliveryAddress: form.deliveryAddress,
       });
       load();
-    } catch { toast.error('Xato'); }
+    } catch (err) { 
+      toast.error(err.response?.data?.message || 'Xato yuz berdi'); 
+      setSaving(false);
+    }
   };
 
   const del = async (id) => {
@@ -346,7 +355,9 @@ export default function Orders() {
 
             <div className="modal-footer">
               <button className="btn btn-ghost" onClick={() => setModal(false)}>Bekor</button>
-              <button className="btn btn-primary" onClick={save}>✅ Saqlash</button>
+              <button className="btn btn-primary" onClick={save} disabled={saving} style={{ opacity: saving ? 0.7 : 1 }}>
+                {saving ? '⏳ Saqlanmoqda...' : '✅ Saqlash'}
+              </button>
             </div>
           </div>
         </div>
