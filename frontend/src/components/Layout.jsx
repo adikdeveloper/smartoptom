@@ -157,6 +157,7 @@ export default function Layout() {
   const navigate = useNavigate();
   const [lowStockItems, setLowStockItems] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const now = new Date().toLocaleDateString('uz-UZ', {
     day: '2-digit', month: 'long', year: 'numeric',
@@ -190,7 +191,13 @@ export default function Layout() {
         />
       )}
 
-      <aside className="sidebar">
+      {/* ===== Mobile Sidebar Overlay ===== */}
+      <div 
+        className={`sidebar-overlay ${mobileMenuOpen ? 'active' : ''}`} 
+        onClick={() => setMobileMenuOpen(false)} 
+      />
+
+      <aside className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <div className="logo-icon">💧</div>
           <div>
@@ -202,6 +209,7 @@ export default function Layout() {
           <span className="nav-label">Asosiy</span>
           {navItems.slice(0, 5).map((item) => (
             <NavLink key={item.to} to={item.to}
+              onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
               <span className="icon">{item.icon}</span>{item.label}
               {/* Sklad uchun qizil nuqta */}
@@ -220,6 +228,7 @@ export default function Layout() {
           <span className="nav-label">Moliya</span>
           {navItems.slice(5).map((item) => (
             <NavLink key={item.to} to={item.to}
+              onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
               <span className="icon">{item.icon}</span>{item.label}
             </NavLink>
@@ -252,6 +261,9 @@ export default function Layout() {
 
       <div className="main-content">
         <header className="topbar">
+          <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>
+            ☰
+          </button>
           <h1>AquaCRM — Optom Suv Do'koni</h1>
           <div className="topbar-right">
             {lowStockItems.length > 0 && (
