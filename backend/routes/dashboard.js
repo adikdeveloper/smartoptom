@@ -56,4 +56,34 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/balances', async (req, res) => {
+  try {
+    const incomes = await Income.aggregate([
+      { $group: { _id: '$paymentMethod', total: { $sum: '$amount' } } }
+    ]);
+    const expenses = await Expense.aggregate([
+      { $group: { _id: '$paymentMethod', total: { $sum: '$amount' } } }
+    ]);
+
+    let balances = {
+      naqd: 0,
+      plastik: 0,
+      bank: 0
+    };
+
+    incomes.forEach(i => {
+      const method = i._id || 'naqd';
+      if (balances[method] !== undefined) balances[method] += i.total;
+    });
+    expenses.forEach(e => {
+      const method = e._id || 'naqd';
+      if (balances[method] !== undefined) balances[method] -= e.total;
+    });
+
+    res.json(balances);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const { Stock, StockMovement } = require('../models/Stock');
+const Product = require('../models/Product');
+const Expense = require('../models/Expense');
 
 // GET - barcha sklad ma'lumotlari
 router.get('/', async (req, res) => {
@@ -42,7 +44,20 @@ router.post('/add', async (req, res) => {
       { product },
       { $inc: { quantity } },
       { upsert: true, new: true }
-    ).populate('product', 'name category unit');
+    ).populate('product', 'name category unit buyPrice');
+
+    if (stock.product && stock.product.buyPrice) {
+      const amount = stock.product.buyPrice * quantity;
+      if (amount > 0) {
+        await Expense.create({
+          title: `Skladga ${stock.product.name} qo'shildi (${quantity} ta)`,
+          amount: amount,
+          category: 'xom_ashyo',
+          paymentMethod: 'naqd',
+          notes: notes || 'Avtomatik chiqim',
+        });
+      }
+    }
 
     res.json(stock);
   } catch (err) {

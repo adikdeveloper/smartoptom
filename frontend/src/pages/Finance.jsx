@@ -24,6 +24,7 @@ export default function Finance() {
   const [tab, setTab] = useState('kirim');
   const [incomeData, setIncomeData] = useState({ incomes: [], total: 0 });
   const [expenseData, setExpenseData] = useState({ expenses: [], total: 0 });
+  const [balances, setBalances] = useState({ naqd: 0, plastik: 0, bank: 0 });
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
   const [filter, setFilter] = useState({ startDate: '', endDate: '' });
@@ -39,12 +40,14 @@ export default function Finance() {
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [i, e] = await Promise.all([
+      const [i, e, b] = await Promise.all([
         api.get('/income', { params: filter }),
         api.get('/expenses', { params: filter }),
+        api.get('/dashboard/balances'),
       ]);
       setIncomeData(i.data);
       setExpenseData(e.data);
+      setBalances(b.data);
     } catch { toast.error('Xato'); }
     finally { setLoading(false); }
   };
@@ -93,21 +96,16 @@ export default function Finance() {
       {/* Umumiy statistika */}
       <div className="stat-grid" style={{ marginBottom: 20 }}>
         <div className="stat-card green">
-          <div className="stat-icon green">💰</div>
-          <div className="stat-info"><p>Jami Kirim</p><h3>{fmt(incomeData.total)} so'm</h3></div>
+          <div className="stat-icon green">💵</div>
+          <div className="stat-info"><p>Xozirgi real balansim naqd pulda</p><h3>{fmt(balances.naqd)} so'm</h3></div>
         </div>
-        <div className="stat-card red">
-          <div className="stat-icon red">💸</div>
-          <div className="stat-info"><p>Jami Chiqim</p><h3>{fmt(expenseData.total)} so'm</h3></div>
+        <div className="stat-card blue">
+          <div className="stat-icon blue">💳</div>
+          <div className="stat-info"><p>Kartada</p><h3>{fmt(balances.plastik)} so'm</h3></div>
         </div>
-        <div className={`stat-card ${netProfit >= 0 ? 'green' : 'red'}`}>
-          <div className={`stat-icon ${netProfit >= 0 ? 'green' : 'red'}`}>📈</div>
-          <div className="stat-info">
-            <p>Sof Foyda</p>
-            <h3 className={netProfit >= 0 ? 'text-success' : 'text-danger'}>
-              {fmt(netProfit)} so'm
-            </h3>
-          </div>
+        <div className="stat-card yellow">
+          <div className="stat-icon yellow">🏦</div>
+          <div className="stat-info"><p>Bank o'tkazmasida</p><h3>{fmt(balances.bank)} so'm</h3></div>
         </div>
         <div className="stat-card blue">
           <div className="stat-icon blue">📋</div>
