@@ -23,8 +23,13 @@ export default function Firms() {
     setLoading(true);
     try {
       const res = await api.get('/firms');
-      setFirms(res.data);
-    } catch {
+      if (Array.isArray(res.data)) {
+        setFirms(res.data);
+      } else {
+        console.error('Expected array of firms, got:', typeof res.data);
+        setFirms([]);
+      }
+    } catch (err) {
       toast.error('Xatolik yuz berdi');
     } finally {
       setLoading(false);
@@ -78,7 +83,11 @@ export default function Firms() {
     setSelectedFirm(firm);
     try {
       const res = await api.get(`/firms/${firm._id}/transactions`);
-      setTransactions(res.data);
+      if (Array.isArray(res.data)) {
+        setTransactions(res.data);
+      } else {
+        setTransactions([]);
+      }
       setHistoryModal(true);
     } catch {
       toast.error('Tarixni yuklashda xato');
@@ -88,7 +97,7 @@ export default function Firms() {
   const fmt = n => new Intl.NumberFormat('uz-UZ').format(n || 0);
 
   // Umumiy qarzni hisoblash
-  const totalDebt = firms.reduce((sum, f) => sum + (f.debt || 0), 0);
+  const totalDebt = Array.isArray(firms) ? firms.reduce((sum, f) => sum + (f.debt || 0), 0) : 0;
 
   return (
     <div>
