@@ -41,8 +41,9 @@ export default function Firms() {
       setFirmModal(false);
       setFirmForm({ name: '', products: '' });
       loadFirms();
-    } catch {
-      toast.error('Xato');
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || err.message || 'Xato');
     }
   };
 
@@ -267,7 +268,7 @@ export default function Firms() {
                         </td>
                         <td>
                           <span className={`badge ${tx.type === 'tolov' ? 'badge-green' : 'badge-red'}`}>
-                            {tx.type === 'tolov' ? '⬆️ To'lov qildik' : '⬇️ Mahsulot oldik'}
+                            {tx.type === 'tolov' ? "⬆️ To'lov qildik" : "⬇️ Mahsulot oldik"}
                           </span>
                         </td>
                         <td>
