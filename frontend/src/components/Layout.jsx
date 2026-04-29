@@ -6,6 +6,7 @@ const navItems = [
   { to: '/dashboard', icon: '📊', label: 'Dashboard' },
   { to: '/orders',    icon: '🛒', label: 'Buyurtmalar' },
   { to: '/customers', icon: '👥', label: 'Mijozlar' },
+  { to: '/firms',     icon: '🏢', label: 'Firmalar' },
   { to: '/products',  icon: '💧', label: 'Mahsulotlar' },
   { to: '/stock',     icon: '🏭', label: 'Sklad' },
   { to: '/finance',   icon: '💰', label: 'Moliya' },
@@ -207,7 +208,7 @@ export default function Layout() {
         </div>
         <nav className="sidebar-nav">
           <span className="nav-label">Asosiy</span>
-          {navItems.slice(0, 5).map((item) => (
+          {navItems.slice(0, 6).map((item) => (
             <NavLink key={item.to} to={item.to}
               onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
@@ -226,7 +227,7 @@ export default function Layout() {
             </NavLink>
           ))}
           <span className="nav-label">Moliya</span>
-          {navItems.slice(5).map((item) => (
+          {navItems.slice(6).map((item) => (
             <NavLink key={item.to} to={item.to}
               onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>

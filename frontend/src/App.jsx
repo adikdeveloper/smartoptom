@@ -8,6 +8,7 @@ import Finance from './pages/Finance';
 import Stock from './pages/Stock';
 import Debts from './pages/Debts';
 import Reports from './pages/Reports';
+import Firms from './pages/Firms';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="stock" element={<Stock />} />
         <Route path="debts" element={<Debts />} />
         <Route path="reports" element={<Reports />} />
+        <Route path="firms" element={<Firms />} />
       </Route>
     </Routes>
   );
