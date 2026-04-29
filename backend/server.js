@@ -22,6 +22,7 @@ app.use('/api/stock',     require('./routes/stock'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/debts',     require('./routes/debts'));
 app.use('/api/reports',   require('./routes/reports'));
+app.use('/api/firms',     require('./routes/firms'));
 
 // Production — frontend build papkasini serve qilish
 if (process.env.NODE_ENV === 'production') {
