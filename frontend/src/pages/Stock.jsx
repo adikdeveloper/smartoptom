@@ -8,7 +8,7 @@ export default function Stock() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(false);
-  const [addForm, setAddForm] = useState({ product: '', quantity: 1, notes: '' });
+  const [addForm, setAddForm] = useState({ product: '', quantity: 1, notes: '', paidNaqd: '', paidPlastik: '', paidBank: '' });
   const [selectedProduct, setSelectedProduct] = useState(null); // qatorda bosilgan mahsulot
   const [tab, setTab] = useState('sklad');
 
@@ -32,7 +32,7 @@ export default function Stock() {
       toast.success("Sklad yangilandi ✅");
       setModal(false);
       setSelectedProduct(null);
-      setAddForm({ product: '', quantity: 1, notes: '' });
+      setAddForm({ product: '', quantity: 1, notes: '', paidNaqd: '', paidPlastik: '', paidBank: '' });
       load();
     } catch { toast.error('Xato'); }
   };
@@ -40,15 +40,18 @@ export default function Stock() {
   const openKirim = (stockItem = null) => {
     if (stockItem) {
       setSelectedProduct(stockItem.product);
-      setAddForm({ product: stockItem.product._id, quantity: 1, notes: '' });
+      setAddForm({ product: stockItem.product._id, quantity: 1, notes: '', paidNaqd: '', paidPlastik: '', paidBank: '' });
     } else {
       setSelectedProduct(null);
-      setAddForm({ product: '', quantity: 1, notes: '' });
+      setAddForm({ product: '', quantity: 1, notes: '', paidNaqd: '', paidPlastik: '', paidBank: '' });
     }
     setModal(true);
   };
 
-  const fmt = n => new Intl.NumberFormat('uz-UZ').format(n);
+  const fmt = n => new Intl.NumberFormat('uz-UZ').format(n || 0);
+
+  const selectedProdObj = products.find(p => p._id === (selectedProduct?._id || addForm.product));
+  const totalAmount = selectedProdObj ? (selectedProdObj.buyPrice || 0) * addForm.quantity : 0;
 
   return (
     <div>
@@ -178,6 +181,27 @@ export default function Stock() {
                 <label>Miqdor *</label>
                 <input className="form-control" type="number" min="1" value={addForm.quantity}
                   onChange={e => setAddForm({ ...addForm, quantity: +e.target.value })} />
+              </div>
+              <div className="form-group full" style={{ margin: '4px 0' }}>
+                <div style={{ padding: '12px', background: 'rgba(59,130,246,0.1)', borderRadius: '8px', border: '1px solid rgba(59,130,246,0.2)' }}>
+                  <strong style={{ color: 'var(--info)' }}>Jami summa (kelish narxi): </strong> 
+                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{fmt(totalAmount)} so'm</span>
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Naqd pulda (so'm)</label>
+                <input className="form-control" type="number" min="0" value={addForm.paidNaqd}
+                  onChange={e => setAddForm({ ...addForm, paidNaqd: e.target.value })} placeholder="0" />
+              </div>
+              <div className="form-group">
+                <label>Kartada (so'm)</label>
+                <input className="form-control" type="number" min="0" value={addForm.paidPlastik}
+                  onChange={e => setAddForm({ ...addForm, paidPlastik: e.target.value })} placeholder="0" />
+              </div>
+              <div className="form-group">
+                <label>Bank orqali (so'm)</label>
+                <input className="form-control" type="number" min="0" value={addForm.paidBank}
+                  onChange={e => setAddForm({ ...addForm, paidBank: e.target.value })} placeholder="0" />
               </div>
               <div className="form-group">
                 <label>Izoh</label>

@@ -33,7 +33,7 @@ router.get('/movements', async (req, res) => {
 // POST - sklad kirim (mahsulot qo'shish)
 router.post('/add', async (req, res) => {
   try {
-    const { product, quantity, notes, performedBy } = req.body;
+    const { product, quantity, notes, performedBy, paidNaqd, paidPlastik, paidBank } = req.body;
 
     await StockMovement.create({
       product, quantity, type: 'kirim',
@@ -46,14 +46,33 @@ router.post('/add', async (req, res) => {
       { upsert: true, new: true }
     ).populate('product', 'name category unit buyPrice');
 
-    if (stock.product && stock.product.buyPrice) {
-      const amount = stock.product.buyPrice * quantity;
-      if (amount > 0) {
+    if (stock.product) {
+      const pName = stock.product.name;
+      
+      if (paidNaqd > 0) {
         await Expense.create({
-          title: `Skladga ${stock.product.name} qo'shildi (${quantity} ta)`,
-          amount: amount,
+          title: `Skladga ${pName} qo'shildi (${quantity} ta) - Naqd`,
+          amount: Number(paidNaqd),
           category: 'xom_ashyo',
           paymentMethod: 'naqd',
+          notes: notes || 'Avtomatik chiqim',
+        });
+      }
+      if (paidPlastik > 0) {
+        await Expense.create({
+          title: `Skladga ${pName} qo'shildi (${quantity} ta) - Plastik`,
+          amount: Number(paidPlastik),
+          category: 'xom_ashyo',
+          paymentMethod: 'plastik',
+          notes: notes || 'Avtomatik chiqim',
+        });
+      }
+      if (paidBank > 0) {
+        await Expense.create({
+          title: `Skladga ${pName} qo'shildi (${quantity} ta) - Bank`,
+          amount: Number(paidBank),
+          category: 'xom_ashyo',
+          paymentMethod: 'bank',
           notes: notes || 'Avtomatik chiqim',
         });
       }
