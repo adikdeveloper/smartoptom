@@ -199,10 +199,10 @@ export default function Layout() {
 
       <aside className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
-          <div className="logo-icon">💧</div>
+          <div className="logo-icon">S</div>
           <div>
-            <h2>AquaCRM</h2>
-            <span>Optom Suv Do'koni</span>
+            <h2>Smartoptom</h2>
+            <span>Boshqaruv Tizimi</span>
           </div>
         </div>
         <nav className="sidebar-nav">
@@ -264,7 +264,7 @@ export default function Layout() {
           <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)}>
             ☰
           </button>
-          <h1>AquaCRM — Optom Suv Do'koni</h1>
+          <h1>Smartoptom — Boshqaruv Tizimi</h1>
           <div className="topbar-right">
             {lowStockItems.length > 0 && (
               <button

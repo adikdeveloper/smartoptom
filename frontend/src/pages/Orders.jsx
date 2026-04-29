@@ -402,9 +402,9 @@ export default function Orders() {
               background: '#1a1a2e', color: '#fff', padding: '18px 24px',
               borderRadius: '12px 12px 0 0', textAlign: 'center',
             }}>
-              <div style={{ fontSize: 28 }}>💧</div>
-              <div style={{ fontWeight: 700, fontSize: 16, letterSpacing: 1 }}>AQUA CRM</div>
-              <div style={{ fontSize: 11, opacity: 0.7 }}>Optom Suv Do'koni</div>
+              <div style={{ fontSize: 28 }}>📦</div>
+              <div style={{ fontWeight: 700, fontSize: 16, letterSpacing: 1 }}>SMARTOPTOM</div>
+              <div style={{ fontSize: 11, opacity: 0.7 }}>Smartoptom</div>
             </div>
 
             <div style={{ padding: '20px 24px' }}>
@@ -483,7 +483,7 @@ export default function Orders() {
                 paddingTop: 10, fontSize: 11, color: '#777',
               }}>
                 <div>Xarid uchun rahmat! 🙏</div>
-                <div style={{ marginTop: 2 }}>AquaCRM • aquacrm.uz</div>
+                <div style={{ marginTop: 2 }}>Smartoptom • smartoptom.uz</div>
               </div>
             </div>
 
@@ -532,8 +532,8 @@ export default function Orders() {
             {/* Print uchun yashirin div */}
             <div id="receipt-print" style={{ display: 'none' }}>
               <div style={{ textAlign: 'center', marginBottom: 12 }}>
-                <h2 style={{ margin: 0 }}>💧 AQUA CRM</h2>
-                <div style={{ fontSize: 12 }}>Optom Suv Do'koni</div>
+                <h2 style={{ margin: 0 }}>SMARTOPTOM</h2>
+                <div style={{ fontSize: 12 }}>Smartoptom</div>
                 <div style={{ borderBottom: '2px dashed #000', margin: '8px 0' }}></div>
                 <div><strong>#{receipt.orderNumber}</strong></div>
                 <div style={{ fontSize: 12 }}>{new Date().toLocaleString('uz-UZ')}</div>
