@@ -59,7 +59,7 @@ router.get('/:id/transactions', async (req, res) => {
 router.post('/:id/transactions', async (req, res) => {
   try {
     const firmId = req.params.id;
-    const { type, amount, paymentMethod, notes } = req.body;
+    const { type, amount, paymentMethod, notes, productName, quantity, price, paidAmount } = req.body;
     
     const firm = await Firm.findById(firmId);
     if (!firm) return res.status(404).json({ message: 'Firma topilmadi' });
@@ -68,7 +68,11 @@ router.post('/:id/transactions', async (req, res) => {
       firm: firmId,
       type,
       amount,
-      paymentMethod: type === 'tolov' ? paymentMethod : undefined,
+      paymentMethod,
+      productName,
+      quantity,
+      price,
+      paidAmount,
       notes
     });
     await tx.save();
@@ -84,8 +88,20 @@ router.post('/:id/transactions', async (req, res) => {
         notes: notes || 'Firmaga qarzni uzish',
       });
     } else if (type === 'qarz') {
-      firm.debt += amount;
-      // Qarzga mahsulot olinganda faqat qarz oshadi, real pul kamaymaydi (Expense yaratilmaydi)
+      const actualPaid = Number(paidAmount) || 0;
+      const debtIncrease = Number(amount) - actualPaid;
+      firm.debt += debtIncrease;
+
+      // Agar mahsulot olib, qisman yoki to'liq pulini srazi bersa:
+      if (actualPaid > 0) {
+        await Expense.create({
+          title: `Mahsulot uchun to'lov (${productName || ''}): ${firm.name}`,
+          amount: actualPaid,
+          category: 'xom_ashyo',
+          paymentMethod,
+          notes: notes || 'Mahsulot olinganda to\'lov',
+        });
+      }
     }
 
     await firm.save();

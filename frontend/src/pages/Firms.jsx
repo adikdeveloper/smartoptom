@@ -14,7 +14,7 @@ export default function Firms() {
   // Forms
   const [firmForm, setFirmForm] = useState({ name: '', products: '' });
   const [selectedFirm, setSelectedFirm] = useState(null);
-  const [txForm, setTxForm] = useState({ type: 'tolov', amount: '', paymentMethod: 'naqd', notes: '' });
+  const [txForm, setTxForm] = useState({ type: 'tolov', amount: '', paymentMethod: 'naqd', notes: '', productName: '', quantity: '', price: '', paidAmount: '' });
   
   // History data
   const [transactions, setTransactions] = useState([]);
@@ -63,7 +63,7 @@ export default function Firms() {
 
   const openTxModal = (firm) => {
     setSelectedFirm(firm);
-    setTxForm({ type: 'tolov', amount: '', paymentMethod: 'naqd', notes: '' });
+    setTxForm({ type: 'tolov', amount: '', paymentMethod: 'naqd', notes: '', productName: '', quantity: '', price: '', paidAmount: '' });
     setTxModal(true);
   };
 
@@ -204,22 +204,69 @@ export default function Firms() {
               </button>
             </div>
 
-            <div className="form-group" style={{ marginBottom: 12 }}>
-              <label>Summa (so'm) *</label>
-              <input className="form-control" type="number" min="0" value={txForm.amount}
-                onChange={e => setTxForm({ ...txForm, amount: e.target.value })} />
-            </div>
-
-            {txForm.type === 'tolov' && (
-              <div className="form-group" style={{ marginBottom: 12 }}>
-                <label>To'lov usuli</label>
-                <select className="form-control" value={txForm.paymentMethod}
-                  onChange={e => setTxForm({ ...txForm, paymentMethod: e.target.value })}>
-                  <option value="naqd">Naqd pulda</option>
-                  <option value="plastik">Kartada</option>
-                  <option value="bank">Bank o'tkazmasida</option>
-                </select>
-              </div>
+            {txForm.type === 'tolov' ? (
+              <>
+                <div className="form-group" style={{ marginBottom: 12 }}>
+                  <label>Summa (so'm) *</label>
+                  <input className="form-control" type="number" min="0" value={txForm.amount}
+                    onChange={e => setTxForm({ ...txForm, amount: e.target.value })} />
+                </div>
+                <div className="form-group" style={{ marginBottom: 12 }}>
+                  <label>To'lov usuli</label>
+                  <select className="form-control" value={txForm.paymentMethod}
+                    onChange={e => setTxForm({ ...txForm, paymentMethod: e.target.value })}>
+                    <option value="naqd">Naqd pulda</option>
+                    <option value="plastik">Kartada</option>
+                    <option value="bank">Bank o'tkazmasida</option>
+                  </select>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="form-group" style={{ marginBottom: 12 }}>
+                  <label>Mahsulot nomi *</label>
+                  <input className="form-control" value={txForm.productName}
+                    onChange={e => setTxForm({ ...txForm, productName: e.target.value })} placeholder="Masalan: 19L idish" />
+                </div>
+                <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>Miqdori (ta) *</label>
+                    <input className="form-control" type="number" value={txForm.quantity}
+                      onChange={e => {
+                        const qty = e.target.value;
+                        setTxForm(prev => ({ ...prev, quantity: qty, amount: qty * prev.price }));
+                      }} />
+                  </div>
+                  <div className="form-group" style={{ flex: 1 }}>
+                    <label>Dona narxi (so'm) *</label>
+                    <input className="form-control" type="number" value={txForm.price}
+                      onChange={e => {
+                        const prc = e.target.value;
+                        setTxForm(prev => ({ ...prev, price: prc, amount: prev.quantity * prc }));
+                      }} />
+                  </div>
+                </div>
+                <div className="form-group" style={{ marginBottom: 12 }}>
+                  <label>Jami summa (so'm)</label>
+                  <input className="form-control" type="number" value={txForm.amount} readOnly style={{ background: '#0a0f18' }} />
+                </div>
+                <div className="form-group" style={{ marginBottom: 12 }}>
+                  <label>Berilgan pul (boshlang'ich to'lov)</label>
+                  <input className="form-control" type="number" min="0" value={txForm.paidAmount}
+                    onChange={e => setTxForm({ ...txForm, paidAmount: e.target.value })} />
+                </div>
+                {Number(txForm.paidAmount) > 0 && (
+                  <div className="form-group" style={{ marginBottom: 12 }}>
+                    <label>To'lov usuli</label>
+                    <select className="form-control" value={txForm.paymentMethod}
+                      onChange={e => setTxForm({ ...txForm, paymentMethod: e.target.value })}>
+                      <option value="naqd">Naqd pulda</option>
+                      <option value="plastik">Kartada</option>
+                      <option value="bank">Bank o'tkazmasida</option>
+                    </select>
+                  </div>
+                )}
+              </>
             )}
 
             <div className="form-group" style={{ marginBottom: 12 }}>
@@ -263,9 +310,9 @@ export default function Firms() {
                   <thead>
                     <tr>
                       <th>Sana</th>
-                      <th>Tur</th>
-                      <th>Summa</th>
-                      <th>To'lov Usuli</th>
+                      <th>Tur / Mahsulot</th>
+                      <th>Summa / Qarz</th>
+                      <th>Berilgan Pul</th>
                       <th>Izoh</th>
                     </tr>
                   </thead>
@@ -279,6 +326,11 @@ export default function Firms() {
                           <span className={`badge ${tx.type === 'tolov' ? 'badge-green' : 'badge-red'}`}>
                             {tx.type === 'tolov' ? "⬆️ To'lov qildik" : "⬇️ Mahsulot oldik"}
                           </span>
+                          {tx.type === 'qarz' && tx.productName && (
+                            <div style={{ fontSize: 12, marginTop: 4 }}>
+                              {tx.productName} ({tx.quantity} ta x {fmt(tx.price)})
+                            </div>
+                          )}
                         </td>
                         <td>
                           <strong style={{ color: tx.type === 'tolov' ? 'var(--success)' : 'var(--danger)' }}>
@@ -288,6 +340,11 @@ export default function Firms() {
                         <td>
                           {tx.type === 'tolov' ? (
                             <span className="badge badge-gray">{tx.paymentMethod}</span>
+                          ) : tx.paidAmount > 0 ? (
+                            <div>
+                              <strong className="text-success">{fmt(tx.paidAmount)} so'm</strong>
+                              <div style={{ fontSize: 11 }} className="text-muted">{tx.paymentMethod}</div>
+                            </div>
                           ) : '—'}
                         </td>
                         <td className="text-muted" style={{ fontSize: 13 }}>{tx.notes || '—'}</td>
