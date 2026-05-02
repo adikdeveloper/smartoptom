@@ -59,7 +59,7 @@ export default function Dashboard() {
         <style>{`@keyframes slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }`}</style>
         <div>
           <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4 }}>
-            {greeting.emoji} {greeting.text}, <span style={{ textTransform: 'capitalize' }}>{username}</span>! 👋
+            🌟 Xush kelibsiz, <span style={{ textTransform: 'capitalize' }}>{username}</span>! Har bir kun yangi imkoniyat! 🚀
           </div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)' }}>
             💼 Bugun ham zo'r natijalarga erishishingizni tilaymiz — omad doim siz bilan!
