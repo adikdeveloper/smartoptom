@@ -59,10 +59,10 @@ export default function Dashboard() {
         <style>{`@keyframes slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }`}</style>
         <div>
           <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4 }}>
-            {greeting.emoji} {greeting.text}, <span style={{ textTransform: 'capitalize' }}>{username}</span>!
+            {greeting.emoji} {greeting.text}, <span style={{ textTransform: 'capitalize' }}>{username}</span>! 👋
           </div>
-          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)' }}>
-            Smartoptom CRM tizimiga xush kelibsiz 🎉 — Bugun ham samarali kun bo'lsin!
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)' }}>
+            💼 Bugun ham zo'r natijalarga erishishingizni tilaymiz — omad doim siz bilan!
           </div>
         </div>
         <div style={{
