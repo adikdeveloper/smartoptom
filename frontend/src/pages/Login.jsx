@@ -69,9 +69,7 @@ function Login({ onLogin }) {
             Kirish
           </button>
         </form>
-        <div style={{ textAlign: 'center', marginTop: 24, fontSize: 12, color: 'var(--text-3)' }}>
-          Standart login: <strong>admin</strong> | parol: <strong>admin123</strong>
-        </div>
+
       </div>
     </div>
   );
