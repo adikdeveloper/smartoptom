@@ -31,8 +31,49 @@ export default function Dashboard() {
 
   if (loading) return <div className="loading"><div className="spinner" /> Yuklanmoqda...</div>;
 
+  // Welcome xabari
+  const getGreeting = () => {
+    const h = new Date().getHours();
+    if (h < 6)  return { emoji: '🌙', text: 'Xayrli tun' };
+    if (h < 12) return { emoji: '🌅', text: 'Xayrli tong' };
+    if (h < 17) return { emoji: '☀️',  text: 'Xayrli kun' };
+    if (h < 21) return { emoji: '🌆', text: 'Xayrli kechqurun' };
+    return { emoji: '🌙', text: 'Xayrli oqshom' };
+  };
+  const greeting = getGreeting();
+  const stored = localStorage.getItem('crm_credentials');
+  const username = stored ? JSON.parse(stored).username : 'Admin';
+  const today = new Date().toLocaleDateString('uz-UZ', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
   return (
     <div>
+      {/* ===== Welcome Banner ===== */}
+      <div style={{
+        background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-g) 100%)',
+        borderRadius: 16, padding: '20px 28px', marginBottom: 24,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        flexWrap: 'wrap', gap: 12,
+        boxShadow: '0 4px 24px rgba(14,165,233,0.25)',
+        animation: 'slideIn 0.4s ease',
+      }}>
+        <style>{`@keyframes slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }`}</style>
+        <div>
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4 }}>
+            {greeting.emoji} {greeting.text}, <span style={{ textTransform: 'capitalize' }}>{username}</span>!
+          </div>
+          <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)' }}>
+            Smartoptom CRM tizimiga xush kelibsiz 🎉 — Bugun ham samarali kun bo'lsin!
+          </div>
+        </div>
+        <div style={{
+          background: 'rgba(255,255,255,0.15)', borderRadius: 10,
+          padding: '8px 16px', fontSize: 12, color: '#fff', fontWeight: 600,
+          backdropFilter: 'blur(4px)',
+        }}>
+          📅 {today}
+        </div>
+      </div>
+
       <div className="stat-grid">
         <div className="stat-card blue">
           <div className="stat-icon blue">👥</div>

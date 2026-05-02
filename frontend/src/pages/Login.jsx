@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoImg from '../assets/logo.png';
 
 function Login({ onLogin }) {
   const [username, setUsername] = useState('');
@@ -19,57 +20,160 @@ function Login({ onLogin }) {
 
   return (
     <div style={{
-      height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: 'var(--bg-main)', padding: 20
+      minHeight: '100vh', display: 'flex',
+      background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%)',
+      position: 'relative', overflow: 'hidden',
     }}>
+      {/* Animated background blobs */}
       <div style={{
-        background: 'var(--bg-card)', padding: '40px', borderRadius: '16px',
-        boxShadow: 'var(--shadow)', width: '100%', maxWidth: '400px',
-        border: '1px solid var(--border)'
+        position: 'absolute', top: '-20%', left: '-10%',
+        width: 500, height: 500, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%)',
+        animation: 'pulse 4s ease-in-out infinite',
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '-15%', right: '-10%',
+        width: 400, height: 400, borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%)',
+        animation: 'pulse 5s ease-in-out infinite reverse',
+      }} />
+      <style>{`
+        @keyframes pulse { 0%,100%{transform:scale(1);opacity:0.8} 50%{transform:scale(1.1);opacity:1} }
+        @keyframes slideUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+      `}</style>
+
+      {/* Left side — branding */}
+      <div style={{
+        flex: 1, display: 'none', flexDirection: 'column',
+        alignItems: 'center', justifyContent: 'center', padding: 40,
+      }} className="login-left">
+      </div>
+
+      {/* Center card */}
+      <div style={{
+        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20,
       }}>
-        <div style={{ textAlign: 'center', marginBottom: 30 }}>
-          <div style={{ 
-            width: 60, height: 60, background: 'linear-gradient(135deg, var(--accent), var(--accent-g))',
-            borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 30, color: '#fff', margin: '0 auto 16px',
-            boxShadow: '0 4px 20px rgba(14, 165, 233, 0.4)'
+        <div style={{
+          background: 'rgba(255,255,255,0.05)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          borderRadius: 24,
+          padding: '40px 36px',
+          width: '100%', maxWidth: 420,
+          boxShadow: '0 24px 60px rgba(0,0,0,0.4), 0 0 40px rgba(14,165,233,0.08)',
+          animation: 'slideUp 0.5s ease',
+        }}>
+          {/* Logo + Tizim nomi */}
+          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              gap: 14, marginBottom: 16,
+            }}>
+              <img
+                src={logoImg}
+                alt="Smartoptom"
+                style={{
+                  width: 54, height: 54, borderRadius: 14,
+                  objectFit: 'cover',
+                  boxShadow: '0 4px 20px rgba(14,165,233,0.4)',
+                  border: '2px solid rgba(14,165,233,0.3)',
+                }}
+              />
+              <div style={{ textAlign: 'left' }}>
+                <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', lineHeight: 1.1 }}>
+                  Smartoptom
+                </div>
+                <div style={{ fontSize: 12, color: 'rgba(148,163,184,0.9)', marginTop: 2 }}>
+                  Boshqaruv Tizimi
+                </div>
+              </div>
+            </div>
+            <div style={{
+              width: '60%', height: 1, background: 'rgba(255,255,255,0.08)',
+              margin: '0 auto 20px',
+            }} />
+            <p style={{ color: 'rgba(148,163,184,0.8)', fontSize: 14 }}>
+              Davom etish uchun tizimga kiring
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(148,163,184,0.9)' }}>
+                👤 Foydalanuvchi nomi
+              </label>
+              <input
+                type="text"
+                placeholder="Login kiriting"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+                autoFocus
+                style={{
+                  padding: '12px 16px', borderRadius: 10, fontSize: 14,
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  color: '#fff', outline: 'none',
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={e => e.target.style.borderColor = 'rgba(14,165,233,0.6)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+              />
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(148,163,184,0.9)' }}>
+                🔑 Parol
+              </label>
+              <input
+                type="password"
+                placeholder="Parol kiriting"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                style={{
+                  padding: '12px 16px', borderRadius: 10, fontSize: 14,
+                  background: 'rgba(255,255,255,0.07)',
+                  border: '1px solid rgba(255,255,255,0.12)',
+                  color: '#fff', outline: 'none',
+                  transition: 'border-color 0.2s',
+                }}
+                onFocus={e => e.target.style.borderColor = 'rgba(14,165,233,0.6)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
+              />
+            </div>
+
+            {error && (
+              <div style={{
+                padding: '10px 14px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+                background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)',
+                color: '#fca5a5', textAlign: 'center',
+              }}>
+                ⚠️ {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              style={{
+                marginTop: 8, padding: '14px', borderRadius: 12,
+                background: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+                color: '#fff', fontWeight: 700, fontSize: 15,
+                border: 'none', cursor: 'pointer',
+                boxShadow: '0 4px 20px rgba(14,165,233,0.35)',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              Tizimga kirish →
+            </button>
+          </form>
+
+          <div style={{
+            marginTop: 28, textAlign: 'center',
+            fontSize: 12, color: 'rgba(100,116,139,0.8)',
           }}>
-            S
+            © 2025 Smartoptom CRM
           </div>
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-1)' }}>Smartoptom</h2>
-          <p style={{ color: 'var(--text-3)', fontSize: 14 }}>Tizimga kirish uchun ma'lumotlarni kiriting</p>
         </div>
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div className="form-group">
-            <label>Login</label>
-            <input 
-              className="form-control" 
-              type="text" 
-              placeholder="admin"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              autoFocus
-            />
-          </div>
-          <div className="form-group">
-            <label>Parol</label>
-            <input 
-              className="form-control" 
-              type="password" 
-              placeholder="••••••"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
-          </div>
-
-          {error && <div style={{ color: '#ef4444', fontSize: 13, fontWeight: 600, textAlign: 'center' }}>{error}</div>}
-
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: 10, padding: 12, fontSize: 16 }}>
-            Kirish
-          </button>
-        </form>
-
       </div>
     </div>
   );
