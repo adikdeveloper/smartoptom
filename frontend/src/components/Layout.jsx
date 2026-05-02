@@ -155,7 +155,7 @@ function StockWarning({ items, onClose, onGoStock }) {
   );
 }
 
-export default function Layout() {
+export default function Layout({ onLogout }) {
   const navigate = useNavigate();
   const [lowStockItems, setLowStockItems] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
@@ -283,6 +283,17 @@ export default function Layout() {
               </button>
             )}
             <span className="badge-time">📅 {now}</span>
+            <button 
+              onClick={onLogout}
+              style={{
+                background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)',
+                color: '#ef4444', borderRadius: 8, padding: '6px 12px',
+                cursor: 'pointer', fontSize: 12, fontWeight: 600
+              }}
+              title="Tizimdan chiqish"
+            >
+              Chiqish
+            </button>
           </div>
         </header>
         <main className="page-body">
