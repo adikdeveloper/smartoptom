@@ -58,11 +58,11 @@ export default function Dashboard() {
       }}>
         <style>{`@keyframes slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }`}</style>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 4 }}>
-            🌟 Xush kelibsiz, <span style={{ textTransform: 'capitalize' }}>{username}</span>! Har bir kun yangi imkoniyat! 🚀
+          <div style={{ fontSize: 22, fontWeight: 900, color: '#fff', marginBottom: 6 }}>
+            Xush kelibsiz, <span style={{ textTransform: 'capitalize' }}>{username}</span>. Ish kuningiz unumli o'tsin.
           </div>
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.85)' }}>
-            💼 Bugun ham zo'r natijalarga erishishingizni tilaymiz — omad doim siz bilan!
+            🟢 Smartoptom boshqaruv tizimi ishlashga tayyor.
           </div>
         </div>
         <div style={{
