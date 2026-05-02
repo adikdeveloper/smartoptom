@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import api from '../api/axios';
 import logoImg from '../assets/logo.png';
 
+const AVATAR_KEY = 'crm_avatar';
+
 const navItems = [
   { to: '/dashboard', icon: '📊', label: 'Dashboard' },
   { to: '/orders',    icon: '🛒', label: 'Buyurtmalar' },
@@ -161,6 +163,14 @@ export default function Layout({ onLogout }) {
   const [lowStockItems, setLowStockItems] = useState([]);
   const [showWarning, setShowWarning] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [avatar, setAvatar] = useState(localStorage.getItem(AVATAR_KEY) || null);
+
+  // Re-render when avatar changes from Profile page
+  useEffect(() => {
+    const handler = () => setAvatar(localStorage.getItem(AVATAR_KEY) || null);
+    window.addEventListener('avatar-updated', handler);
+    return () => window.removeEventListener('avatar-updated', handler);
+  }, []);
 
   const now = new Date().toLocaleDateString('uz-UZ', {
     day: '2-digit', month: 'long', year: 'numeric',
@@ -293,20 +303,23 @@ export default function Layout({ onLogout }) {
             <NavLink to="/profile" style={{ textDecoration: 'none' }}>
               <div style={{
                 width: 34, height: 34, borderRadius: '50%',
-                background: 'linear-gradient(135deg, var(--accent), var(--accent-g))',
+                background: avatar ? 'transparent' : 'linear-gradient(135deg, var(--accent), var(--accent-g))',
                 color: '#fff', fontWeight: 800, fontSize: 14,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer', border: '2px solid rgba(14,165,233,0.3)',
+                cursor: 'pointer', border: '2px solid rgba(14,165,233,0.4)',
                 boxShadow: '0 2px 8px rgba(14,165,233,0.25)',
-                transition: 'transform 0.2s',
+                overflow: 'hidden',
               }}
               title="Profil"
               >
-                {(() => {
-                  const u = localStorage.getItem('crm_credentials');
-                  const name = u ? JSON.parse(u).username : 'admin';
-                  return name.charAt(0).toUpperCase();
-                })()}
+                {avatar
+                  ? <img src={avatar} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : (() => {
+                      const u = localStorage.getItem('crm_credentials');
+                      const name = u ? JSON.parse(u).username : 'admin';
+                      return name.charAt(0).toUpperCase();
+                    })()
+                }
               </div>
             </NavLink>
             <button 

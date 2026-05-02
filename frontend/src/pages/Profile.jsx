@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const CREDENTIALS_KEY = 'crm_credentials';
+const AVATAR_KEY = 'crm_avatar';
 
 function getCredentials() {
   const stored = localStorage.getItem(CREDENTIALS_KEY);
@@ -11,16 +12,43 @@ function getCredentials() {
 export default function Profile() {
   const creds = getCredentials();
   const [activeTab, setActiveTab] = useState('info');
+  const [avatar, setAvatar] = useState(localStorage.getItem(AVATAR_KEY) || null);
+  const [avatarHover, setAvatarHover] = useState(false);
+  const fileInputRef = useRef(null);
 
   // Parol o'zgartirish
   const [oldPass, setOldPass] = useState('');
   const [newPass, setNewPass] = useState('');
   const [confirmPass, setConfirmPass] = useState('');
-  const [passMsg, setPassMsg] = useState(null); // { type: 'success'|'error', text }
+  const [passMsg, setPassMsg] = useState(null);
 
   // Login o'zgartirish
   const [newUsername, setNewUsername] = useState('');
   const [loginMsg, setLoginMsg] = useState(null);
+
+  // ===== Rasm yuklash =====
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Rasm hajmi 2MB dan oshmasligi kerak!');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const base64 = ev.target.result;
+      localStorage.setItem(AVATAR_KEY, base64);
+      setAvatar(base64);
+      window.dispatchEvent(new Event('avatar-updated'));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    localStorage.removeItem(AVATAR_KEY);
+    setAvatar(null);
+    window.dispatchEvent(new Event('avatar-updated'));
+  };
 
   const handleChangePassword = (e) => {
     e.preventDefault();
@@ -30,7 +58,7 @@ export default function Profile() {
       return;
     }
     if (newPass.length < 4) {
-      setPassMsg({ type: 'error', text: 'Yangi parol kamida 4 ta belgi bo\'lishi kerak!' });
+      setPassMsg({ type: 'error', text: "Yangi parol kamida 4 ta belgi bo'lishi kerak!" });
       return;
     }
     if (newPass !== confirmPass) {
@@ -38,14 +66,14 @@ export default function Profile() {
       return;
     }
     localStorage.setItem(CREDENTIALS_KEY, JSON.stringify({ ...current, password: newPass }));
-    setPassMsg({ type: 'success', text: '✅ Parol muvaffaqiyatli o\'zgartirildi!' });
+    setPassMsg({ type: 'success', text: "✅ Parol muvaffaqiyatli o'zgartirildi!" });
     setOldPass(''); setNewPass(''); setConfirmPass('');
   };
 
   const handleChangeUsername = (e) => {
     e.preventDefault();
     if (newUsername.trim().length < 3) {
-      setLoginMsg({ type: 'error', text: 'Login kamida 3 ta belgi bo\'lishi kerak!' });
+      setLoginMsg({ type: 'error', text: "Login kamida 3 ta belgi bo'lishi kerak!" });
       return;
     }
     const current = getCredentials();
@@ -56,42 +84,98 @@ export default function Profile() {
   };
 
   const tabs = [
-    { id: 'info', label: '👤 Ma\'lumotlar' },
+    { id: 'info', label: "👤 Ma'lumotlar" },
     { id: 'password', label: '🔑 Parol' },
     { id: 'system', label: '⚙️ Tizim' },
   ];
 
   return (
     <div style={{ maxWidth: 680, margin: '0 auto' }}>
+      {/* Hidden file input */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleAvatarChange}
+        style={{ display: 'none' }}
+      />
+
       {/* Header card */}
       <div className="card" style={{ marginBottom: 24, padding: 0, overflow: 'hidden' }}>
         <div style={{
           background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-g) 100%)',
-          padding: '32px 32px 20px',
-          position: 'relative',
+          padding: '32px 32px 24px',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-            <div style={{
-              width: 72, height: 72, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.2)',
-              border: '3px solid rgba(255,255,255,0.5)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 32, fontWeight: 800, color: '#fff',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-              flexShrink: 0,
-            }}>
-              {creds.username.charAt(0).toUpperCase()}
+
+            {/* ===== Avatar ===== */}
+            <div style={{ position: 'relative', flexShrink: 0 }}>
+              <div
+                onClick={() => fileInputRef.current.click()}
+                onMouseEnter={() => setAvatarHover(true)}
+                onMouseLeave={() => setAvatarHover(false)}
+                style={{
+                  width: 80, height: 80, borderRadius: '50%',
+                  border: '3px solid rgba(255,255,255,0.6)',
+                  overflow: 'hidden', cursor: 'pointer',
+                  boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+                  position: 'relative',
+                  background: avatar ? 'transparent' : 'rgba(255,255,255,0.2)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  transition: 'transform 0.2s',
+                  transform: avatarHover ? 'scale(1.05)' : 'scale(1)',
+                }}
+              >
+                {avatar
+                  ? <img src={avatar} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ fontSize: 34, fontWeight: 800, color: '#fff' }}>{creds.username.charAt(0).toUpperCase()}</span>
+                }
+                {/* Hover overlay */}
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'rgba(0,0,0,0.5)',
+                  display: 'flex', flexDirection: 'column',
+                  alignItems: 'center', justifyContent: 'center',
+                  opacity: avatarHover ? 1 : 0,
+                  transition: 'opacity 0.2s',
+                  gap: 2,
+                }}>
+                  <span style={{ fontSize: 20 }}>📷</span>
+                  <span style={{ color: '#fff', fontSize: 9, fontWeight: 700 }}>O'zgartirish</span>
+                </div>
+              </div>
+
+              {/* Remove button */}
+              {avatar && (
+                <button
+                  onClick={handleRemoveAvatar}
+                  title="Rasmni o'chirish"
+                  style={{
+                    position: 'absolute', bottom: 0, right: 0,
+                    width: 22, height: 22, borderRadius: '50%',
+                    background: '#ef4444', border: '2px solid #fff',
+                    color: '#fff', fontSize: 13, fontWeight: 800,
+                    cursor: 'pointer', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center',
+                    lineHeight: 1,
+                  }}
+                >×</button>
+              )}
             </div>
+
             <div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 4 }}>
+              <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 6 }}>
                 {creds.username}
               </div>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 background: 'rgba(255,255,255,0.2)', borderRadius: 20,
-                padding: '3px 12px', fontSize: 12, color: '#fff', fontWeight: 600,
+                padding: '3px 12px', fontSize: 12, color: '#fff', fontWeight: 600, marginBottom: 8,
               }}>
                 🛡️ Administrator
+              </div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)' }}>
+                📷 Avatarga bosib rasm o'zgartiring
               </div>
             </div>
           </div>
@@ -121,6 +205,49 @@ export default function Profile() {
       {activeTab === 'info' && (
         <div className="card">
           <h3 style={{ marginBottom: 20, color: 'var(--text-1)', fontSize: 16 }}>Profil Ma'lumotlari</h3>
+
+          {/* Avatar upload card */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 14,
+            padding: '14px 16px', borderRadius: 10, marginBottom: 24,
+            background: 'rgba(14,165,233,0.05)', border: '1px dashed rgba(14,165,233,0.35)',
+          }}>
+            <div
+              onClick={() => fileInputRef.current.click()}
+              style={{
+                width: 52, height: 52, borderRadius: '50%',
+                border: '2px solid var(--accent)',
+                overflow: 'hidden', cursor: 'pointer', flexShrink: 0,
+                background: avatar ? 'transparent' : 'rgba(14,165,233,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >
+              {avatar
+                ? <img src={avatar} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : <span style={{ fontSize: 22 }}>👤</span>}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-1)', marginBottom: 2 }}>Profil rasmi</div>
+              <div style={{ fontSize: 11, color: 'var(--text-3)' }}>JPG, PNG, WEBP formatlar • Maksimal 2MB</div>
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button className="btn btn-primary" onClick={() => fileInputRef.current.click()} style={{ fontSize: 12, padding: '6px 14px' }}>
+                📷 Yuklash
+              </button>
+              {avatar && (
+                <button
+                  onClick={handleRemoveAvatar}
+                  style={{
+                    fontSize: 12, padding: '6px 12px',
+                    background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
+                    color: '#ef4444', borderRadius: 8, cursor: 'pointer',
+                  }}
+                >
+                  O'chirish
+                </button>
+              )}
+            </div>
+          </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <InfoRow label="👤 Foydalanuvchi nomi" value={creds.username} />
@@ -165,7 +292,6 @@ export default function Profile() {
           <p style={{ color: 'var(--text-3)', fontSize: 13, marginBottom: 24 }}>
             Xavfsizlik uchun parolingizni muntazam yangilab turing.
           </p>
-
           <form onSubmit={handleChangePassword} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div className="form-group">
               <label>Joriy parol</label>
@@ -182,7 +308,6 @@ export default function Profile() {
               <input className="form-control" type="password" placeholder="••••••••"
                 value={confirmPass} onChange={e => setConfirmPass(e.target.value)} />
             </div>
-
             {passMsg && (
               <div style={{
                 padding: '10px 14px', borderRadius: 8, fontSize: 13,
@@ -193,7 +318,6 @@ export default function Profile() {
                 {passMsg.text}
               </div>
             )}
-
             <button type="submit" className="btn btn-primary" style={{ width: '100%', justifyContent: 'center', padding: 12 }}>
               🔑 Parolni saqlash
             </button>
@@ -214,7 +338,6 @@ export default function Profile() {
             <InfoRow label="☁️ Hosting" value="Vercel (Frontend) / Render (Backend)" />
             <InfoRow label="👨‍💻 Ishlab chiquvchi" value="adikdeveloper" />
           </div>
-
           <div style={{
             marginTop: 24, padding: '14px 16px', borderRadius: 10,
             background: 'rgba(14,165,233,0.05)', border: '1px solid rgba(14,165,233,0.15)',
