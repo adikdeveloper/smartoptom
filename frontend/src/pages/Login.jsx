@@ -171,7 +171,7 @@ function Login({ onLogin }) {
             marginTop: 28, textAlign: 'center',
             fontSize: 12, color: 'rgba(100,116,139,0.8)',
           }}>
-            © 2025 Smartoptom CRM
+            © 2026 Smartoptom CRM
           </div>
         </div>
       </div>

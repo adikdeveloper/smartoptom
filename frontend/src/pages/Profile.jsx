@@ -343,7 +343,7 @@ export default function Profile() {
             background: 'rgba(14,165,233,0.05)', border: '1px solid rgba(14,165,233,0.15)',
             fontSize: 12, color: 'var(--text-3)', textAlign: 'center',
           }}>
-            © 2025 Smartoptom CRM — Barcha huquqlar himoyalangan
+            © 2026 Smartoptom CRM — Barcha huquqlar himoyalangan
           </div>
         </div>
       )}
