@@ -11,6 +11,7 @@ import Debts from './pages/Debts';
 import Reports from './pages/Reports';
 import Firms from './pages/Firms';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(localStorage.getItem('auth') === 'true');
@@ -50,6 +51,7 @@ function App() {
         <Route path="debts" element={<Debts />} />
         <Route path="reports" element={<Reports />} />
         <Route path="firms" element={<Firms />} />
+        <Route path="profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>
     </Routes>

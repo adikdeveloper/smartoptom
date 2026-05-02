@@ -7,7 +7,9 @@ function Login({ onLogin }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === 'admin' && password === 'admin123') {
+    const stored = localStorage.getItem('crm_credentials');
+    const creds = stored ? JSON.parse(stored) : { username: 'admin', password: 'admin123' };
+    if (username === creds.username && password === creds.password) {
       localStorage.setItem('auth', 'true');
       onLogin();
     } else {

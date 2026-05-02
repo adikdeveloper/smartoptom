@@ -13,6 +13,7 @@ const navItems = [
   { to: '/finance',   icon: '💰', label: 'Moliya' },
   { to: '/debts',     icon: '💳', label: 'Qarzdorliklar' },
   { to: '/reports',   icon: '📈', label: 'Hisobotlar' },
+  { to: '/profile',   icon: '👤', label: 'Profil' },
 ];
 
 // ===== Sklad ogohlantirish modali =====
@@ -228,13 +229,19 @@ export default function Layout({ onLogout }) {
             </NavLink>
           ))}
           <span className="nav-label">Moliya</span>
-          {navItems.slice(6).map((item) => (
+          {navItems.slice(6, 9).map((item) => (
             <NavLink key={item.to} to={item.to}
               onClick={() => setMobileMenuOpen(false)}
               className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
               <span className="icon">{item.icon}</span>{item.label}
             </NavLink>
           ))}
+          <span className="nav-label">Sozlamalar</span>
+          <NavLink to="/profile"
+            onClick={() => setMobileMenuOpen(false)}
+            className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
+            <span className="icon">👤</span>Profil
+          </NavLink>
         </nav>
 
         {/* Sklad ogohlantirish mini banner */}
@@ -283,6 +290,25 @@ export default function Layout({ onLogout }) {
               </button>
             )}
             <span className="badge-time">📅 {now}</span>
+            <NavLink to="/profile" style={{ textDecoration: 'none' }}>
+              <div style={{
+                width: 34, height: 34, borderRadius: '50%',
+                background: 'linear-gradient(135deg, var(--accent), var(--accent-g))',
+                color: '#fff', fontWeight: 800, fontSize: 14,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', border: '2px solid rgba(14,165,233,0.3)',
+                boxShadow: '0 2px 8px rgba(14,165,233,0.25)',
+                transition: 'transform 0.2s',
+              }}
+              title="Profil"
+              >
+                {(() => {
+                  const u = localStorage.getItem('crm_credentials');
+                  const name = u ? JSON.parse(u).username : 'admin';
+                  return name.charAt(0).toUpperCase();
+                })()}
+              </div>
+            </NavLink>
             <button 
               onClick={onLogout}
               style={{
