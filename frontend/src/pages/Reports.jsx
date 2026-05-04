@@ -7,8 +7,6 @@ import {
 
 const fmt = n => new Intl.NumberFormat('uz-UZ').format(n || 0);
 const COLORS = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#ec4899'];
-const REPORT_KEY = 'report_secret_key';
-const DEFAULT_SECRET = 'smartoptom2026';
 
 const expenseCatLabels = {
   xom_ashyo: 'Xom ashyo', yetkazib_berish: 'Yetkazib berish',
@@ -20,84 +18,11 @@ const incomeCatLabels = {
 };
 const methodLabels = { naqd: 'Naqd', plastik: 'Plastik', bank: 'Bank' };
 
-// ===== Kalit kiritish ekrani =====
-function KeyGate({ onUnlock }) {
-  const [input, setInput] = useState('');
-  const [error, setError] = useState('');
-  const [shake, setShake] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const secret = localStorage.getItem(REPORT_KEY) || DEFAULT_SECRET;
-    if (input === secret) {
-      onUnlock();
-    } else {
-      setError("Kalit noto'g'ri! Qayta urinib ko'ring.");
-      setShake(true);
-      setTimeout(() => setShake(false), 600);
-      setInput('');
-    }
-  };
-
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
-      <style>{`@keyframes shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }`}</style>
-      <div className="card" style={{
-        maxWidth: 400, width: '100%', textAlign: 'center', padding: '40px 32px',
-        animation: shake ? 'shake 0.5s ease' : 'none',
-      }}>
-        <div style={{
-          width: 64, height: 64, borderRadius: '50%',
-          background: 'linear-gradient(135deg, var(--accent), var(--accent-g))',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 28, margin: '0 auto 20px',
-          boxShadow: '0 4px 20px rgba(14,165,233,0.3)',
-        }}>
-          🔐
-        </div>
-        <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-1)', marginBottom: 8 }}>
-          Hisobotlar himoyalangan
-        </h3>
-        <p style={{ color: 'var(--text-3)', fontSize: 13, marginBottom: 24 }}>
-          Umumiy moliyaviy ma'lumotlarni ko'rish uchun maxsus kalitni kiriting.
-        </p>
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <input
-            className="form-control"
-            type="password"
-            placeholder="Kalitni kiriting..."
-            value={input}
-            onChange={e => { setInput(e.target.value); setError(''); }}
-            autoFocus
-            style={{ textAlign: 'center', fontSize: 16, letterSpacing: 4 }}
-          />
-          {error && (
-            <div style={{
-              padding: '8px 12px', borderRadius: 8, fontSize: 13,
-              background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-              color: '#ef4444',
-            }}>
-              ⚠️ {error}
-            </div>
-          )}
-          <button type="submit" className="btn btn-primary" style={{ padding: 12, fontSize: 15, justifyContent: 'center' }}>
-            🔓 Ochish
-          </button>
-        </form>
-        <div style={{ marginTop: 20, fontSize: 11, color: 'var(--text-3)', opacity: 0.7 }}>
-          Standart kalit: <code style={{ background: 'rgba(0,0,0,0.1)', padding: '1px 6px', borderRadius: 4 }}>smartoptom2026</code>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export default function Reports() {
   const [summary, setSummary] = useState(null);
   const [monthly, setMonthly] = useState([]);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState({ startDate: '', endDate: '' });
-  const [unlocked, setUnlocked] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -112,9 +37,7 @@ export default function Reports() {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { if (unlocked) load(); }, [period, unlocked]);
-
-  if (!unlocked) return <KeyGate onUnlock={() => setUnlocked(true)} />;
+  useEffect(() => { load(); }, [period]);
 
   const expensePie = summary
     ? Object.entries(summary.expenseByCategory).map(([k, v]) => ({ name: expenseCatLabels[k] || k, value: v }))
@@ -140,17 +63,6 @@ export default function Reports() {
             value={period.endDate} onChange={e => setPeriod({ ...period, endDate: e.target.value })} />
           <button className="btn btn-ghost" onClick={() => setPeriod({ startDate: '', endDate: '' })}>
             ♻️
-          </button>
-          <button
-            onClick={() => setUnlocked(false)}
-            style={{
-              padding: '6px 12px', borderRadius: 8, fontSize: 12, fontWeight: 600,
-              background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)',
-              color: '#ef4444', cursor: 'pointer',
-            }}
-            title="Hisobotlarni yopish"
-          >
-            🔒 Yopish
           </button>
         </div>
       </div>
