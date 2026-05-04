@@ -5,11 +5,25 @@ import toast from 'react-hot-toast';
 export default function Firms() {
   const [firms, setFirms] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState([]);
   
   // Modals
   const [firmModal, setFirmModal] = useState(false);
   const [txModal, setTxModal] = useState(false);
   const [historyModal, setHistoryModal] = useState(false);
+  const [editFirmId, setEditFirmId] = useState(null);
+
+  const openAddFirm = () => {
+    setFirmForm({ name: '', products: '' });
+    setEditFirmId(null);
+    setFirmModal(true);
+  };
+
+  const openEditFirm = (f) => {
+    setFirmForm({ name: f.name, products: f.products || '' });
+    setEditFirmId(f._id);
+    setFirmModal(true);
+  };
 
   // Forms
   const [firmForm, setFirmForm] = useState({ name: '', products: '' });
@@ -36,13 +50,21 @@ export default function Firms() {
     }
   };
 
-  useEffect(() => { loadFirms(); }, []);
+  useEffect(() => { 
+    loadFirms(); 
+    api.get('/products').then(res => setAllProducts(res.data)).catch(console.error);
+  }, []);
 
   const saveFirm = async () => {
     if (!firmForm.name) return toast.error("Kompaniya nomini kiriting");
     try {
-      await api.post('/firms', firmForm);
-      toast.success("Firma qo'shildi ✅");
+      if (editFirmId) {
+        await api.put(`/firms/${editFirmId}`, firmForm);
+        toast.success("Firma yangilandi ✅");
+      } else {
+        await api.post('/firms', firmForm);
+        toast.success("Firma qo'shildi ✅");
+      }
       setFirmModal(false);
       setFirmForm({ name: '', products: '' });
       loadFirms();
@@ -103,7 +125,7 @@ export default function Firms() {
     <div>
       <div className="page-header">
         <h2>🏢 Firmalar (Ta'minotchilar)</h2>
-        <button className="btn btn-primary" onClick={() => setFirmModal(true)}>+ Firma qo'shish</button>
+        <button className="btn btn-primary" onClick={openAddFirm}>+ Firma qo'shish</button>
       </div>
 
       <div className="stat-grid">
@@ -143,9 +165,9 @@ export default function Firms() {
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: 8 }}>
-                          <button className="btn btn-primary btn-sm" onClick={() => openTxModal(f)}>💰 Amaliyot</button>
-                          <button className="btn btn-ghost btn-sm" onClick={() => openHistory(f)}>📋 Tarix</button>
-                          <button className="btn btn-danger btn-sm" onClick={() => deleteFirm(f._id)}>🗑️</button>
+                          <button className="btn btn-ghost btn-sm" title="Ko'rish" onClick={() => openHistory(f)}>👁️</button>
+                          <button className="btn btn-ghost btn-sm" title="Tahrirlash" onClick={() => openEditFirm(f)}>✏️</button>
+                          <button className="btn btn-danger btn-sm" title="O'chirish" onClick={() => deleteFirm(f._id)}>🗑️</button>
                         </div>
                       </td>
                     </tr>
@@ -161,7 +183,7 @@ export default function Firms() {
         <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setFirmModal(false)}>
           <div className="modal">
             <div className="modal-header">
-              <h2>🏢 Yangi Firma</h2>
+              <h2>{editFirmId ? "🏢 Firmani Tahrirlash" : "🏢 Yangi Firma"}</h2>
               <button className="modal-close" onClick={() => setFirmModal(false)}>✕</button>
             </div>
             <div className="form-group" style={{ marginBottom: 12 }}>
@@ -171,8 +193,33 @@ export default function Firms() {
             </div>
             <div className="form-group" style={{ marginBottom: 12 }}>
               <label>Keltiradigan mahsulotlari</label>
-              <input className="form-control" value={firmForm.products}
-                onChange={e => setFirmForm({ ...firmForm, products: e.target.value })} placeholder="Baklashka, krishka, kuler..." />
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 200, overflowY: 'auto', background: 'var(--bg-input)', padding: 10, borderRadius: 8, border: '1px solid var(--border)' }}>
+                {allProducts.map(p => {
+                  const current = firmForm.products ? firmForm.products.split(',').map(s => s.trim()).filter(Boolean) : [];
+                  const isSelected = current.includes(p.name);
+                  return (
+                    <label key={p._id} style={{ display: 'flex', alignItems: 'center', gap: 8, textTransform: 'none', fontWeight: 'normal', cursor: 'pointer', fontSize: 13.5 }}>
+                      <input 
+                        type="checkbox" 
+                        checked={isSelected}
+                        onChange={(e) => {
+                          let updated = [...current];
+                          if (e.target.checked) {
+                            if (!updated.includes(p.name)) updated.push(p.name);
+                          } else {
+                            updated = updated.filter(name => name !== p.name);
+                          }
+                          setFirmForm({ ...firmForm, products: updated.join(', ') });
+                        }}
+                      />
+                      <span style={{ color: 'var(--text-1)' }}>{p.name}</span>
+                    </label>
+                  );
+                })}
+                {allProducts.length === 0 && (
+                  <div style={{ fontSize: 12, color: 'var(--text-3)' }}>Mahsulotlar topilmadi. Oldin mahsulot qo'shing.</div>
+                )}
+              </div>
             </div>
             <div className="modal-footer">
               <button className="btn btn-ghost" onClick={() => setFirmModal(false)}>Bekor</button>
