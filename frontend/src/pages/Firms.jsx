@@ -12,6 +12,8 @@ export default function Firms() {
   const [txModal, setTxModal] = useState(false);
   const [historyModal, setHistoryModal] = useState(false);
   const [editFirmId, setEditFirmId] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteFirmId, setDeleteFirmId] = useState(null);
 
   const openAddFirm = () => {
     setFirmForm({ name: '', products: '' });
@@ -74,11 +76,18 @@ export default function Firms() {
     }
   };
 
-  const deleteFirm = async (id) => {
-    if (!confirm("Firmani o'chirishni tasdiqlaysizmi? Barcha tarixi ham o'chadi!")) return;
+  const confirmDelete = (id) => {
+    setDeleteFirmId(id);
+    setDeleteModal(true);
+  };
+
+  const deleteFirm = async () => {
+    if (!deleteFirmId) return;
     try {
-      await api.delete(`/firms/${id}`);
+      await api.delete(`/firms/${deleteFirmId}`);
       toast.success("O'chirildi");
+      setDeleteModal(false);
+      setDeleteFirmId(null);
       loadFirms();
     } catch { toast.error('Xato'); }
   };
@@ -167,7 +176,7 @@ export default function Firms() {
                         <div style={{ display: 'flex', gap: 8 }}>
                           <button className="btn btn-ghost btn-sm" title="Ko'rish" onClick={() => openHistory(f)}>👁️</button>
                           <button className="btn btn-ghost btn-sm" title="Tahrirlash" onClick={() => openEditFirm(f)}>✏️</button>
-                          <button className="btn btn-danger btn-sm" title="O'chirish" onClick={() => deleteFirm(f._id)}>🗑️</button>
+                          <button className="btn btn-danger btn-sm" title="O'chirish" onClick={() => confirmDelete(f._id)}>🗑️</button>
                         </div>
                       </td>
                     </tr>
@@ -404,6 +413,21 @@ export default function Firms() {
             
             <div className="modal-footer">
               <button className="btn btn-ghost" onClick={() => setHistoryModal(false)}>Yopish</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== O'chirishni tasdiqlash Modal ===== */}
+      {deleteModal && (
+        <div className="modal-overlay" onClick={e => e.target === e.currentTarget && setDeleteModal(false)}>
+          <div className="modal" style={{ maxWidth: 400, textAlign: 'center' }}>
+            <div style={{ fontSize: 48, marginBottom: 16 }}>⚠️</div>
+            <h3 style={{ marginBottom: 12 }}>Firmani o'chirishni tasdiqlaysizmi?</h3>
+            <p className="text-muted" style={{ marginBottom: 24 }}>Diqqat! Ushbu firmani o'chirsangiz, unga tegishli barcha tranzaksiya va tarixlar ham o'chib ketadi. Bu amalni ortga qaytarib bo'lmaydi.</p>
+            <div style={{ display: 'flex', gap: 12, justifyContent: 'center' }}>
+              <button className="btn btn-ghost" onClick={() => setDeleteModal(false)}>Bekor qilish</button>
+              <button className="btn btn-danger" onClick={deleteFirm}>Ha, o'chirish</button>
             </div>
           </div>
         </div>
