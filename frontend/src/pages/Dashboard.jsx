@@ -49,11 +49,11 @@ export default function Dashboard() {
     <div>
       {/* ===== Welcome Banner ===== */}
       <div style={{
-        background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-g) 100%)',
-        borderRadius: 16, padding: '20px 28px', marginBottom: 24,
+        background: 'linear-gradient(135deg, #0f2444 0%, #1a3a6c 50%, #132d54 100%)',
+        borderRadius: 16, padding: '22px 28px', marginBottom: 24,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         flexWrap: 'wrap', gap: 12,
-        boxShadow: '0 4px 24px rgba(14,165,233,0.25)',
+        boxShadow: '0 4px 20px rgba(15,36,68,0.35)',
         animation: 'slideIn 0.4s ease',
       }}>
         <style>{`@keyframes slideIn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:translateY(0)} }`}</style>
@@ -134,12 +134,12 @@ export default function Dashboard() {
                   <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e2d45" />
-              <XAxis dataKey="name" stroke="#475569" tick={{ fontSize: 12 }} />
-              <YAxis stroke="#475569" tick={{ fontSize: 11 }}
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 12 }} />
+              <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }}
                 tickFormatter={v => (v / 1000000).toFixed(1) + 'M'} />
               <Tooltip
-                contentStyle={{ background: '#111827', border: '1px solid #1e2d45', borderRadius: 8 }}
+                contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                 formatter={v => [fmt(v)]}
               />
               <Area type="monotone" dataKey="kirim" stroke="#3b82f6"
@@ -154,12 +154,12 @@ export default function Dashboard() {
           <h3 style={{ marginBottom: 16, fontSize: 15 }}>🏭 Oylik Solishtirma</h3>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e2d45" />
-              <XAxis dataKey="name" stroke="#475569" tick={{ fontSize: 12 }} />
-              <YAxis stroke="#475569" tick={{ fontSize: 11 }}
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis dataKey="name" stroke="#94a3b8" tick={{ fontSize: 12 }} />
+              <YAxis stroke="#94a3b8" tick={{ fontSize: 11 }}
                 tickFormatter={v => (v / 1000000).toFixed(1) + 'M'} />
               <Tooltip
-                contentStyle={{ background: '#111827', border: '1px solid #1e2d45', borderRadius: 8 }}
+                contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8, boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
                 formatter={v => [fmt(v)]}
               />
               <Legend />

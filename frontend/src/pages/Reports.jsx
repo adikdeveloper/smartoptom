@@ -213,7 +213,7 @@ export default function Reports() {
             <CartesianGrid strokeDasharray="3 3" stroke="#1e2d45" />
             <XAxis dataKey="name" stroke="#475569" tick={{ fontSize: 12 }} />
             <YAxis stroke="#475569" tick={{ fontSize: 11 }} tickFormatter={v => (v / 1000000).toFixed(1) + 'M'} />
-            <Tooltip contentStyle={{ background: '#111827', border: '1px solid #1e2d45', borderRadius: 8 }}
+            <Tooltip contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8 }}
               formatter={v => [fmt(v) + " so'm"]} />
             <Legend />
             <Area type="monotone" dataKey="kirim" name="Kirim" stroke="#10b981" fill="url(#gKirim)" strokeWidth={2} />
@@ -231,7 +231,7 @@ export default function Reports() {
               <CartesianGrid strokeDasharray="3 3" stroke="#1e2d45" />
               <XAxis dataKey="name" stroke="#475569" tick={{ fontSize: 12 }} />
               <YAxis stroke="#475569" tick={{ fontSize: 11 }} tickFormatter={v => (v / 1000000).toFixed(1) + 'M'} />
-              <Tooltip contentStyle={{ background: '#111827', border: '1px solid #1e2d45', borderRadius: 8 }}
+              <Tooltip contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8 }}
                 formatter={v => [fmt(v) + " so'm"]} />
               <Legend />
               <Bar dataKey="kirim" name="Kirim" fill="#10b981" radius={[4,4,0,0]} />
@@ -252,7 +252,7 @@ export default function Reports() {
                     {methodPie.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip formatter={v => [fmt(v) + " so'm"]}
-                    contentStyle={{ background: '#111827', border: '1px solid #1e2d45', borderRadius: 8 }} />
+                    contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8 }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
@@ -273,7 +273,7 @@ export default function Reports() {
                     {expensePie.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip formatter={v => [fmt(v) + " so'm"]}
-                    contentStyle={{ background: '#111827', border: '1px solid #1e2d45', borderRadius: 8 }} />
+                    contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8 }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
@@ -291,7 +291,7 @@ export default function Reports() {
                     {incomePie.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
                   <Tooltip formatter={v => [fmt(v) + " so'm"]}
-                    contentStyle={{ background: '#111827', border: '1px solid #1e2d45', borderRadius: 8 }} />
+                    contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 8 }} />
                 </PieChart>
               </ResponsiveContainer>
             )}
