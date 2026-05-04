@@ -36,19 +36,19 @@ function StockWarning({ items, onClose, onGoStock }) {
     >
       <style>{`@keyframes fadeIn { from { opacity:0; transform:scale(0.95) } to { opacity:1; transform:scale(1) } }`}</style>
       <div style={{
-        background: 'linear-gradient(135deg, #0a1a0d, #0f2010)',
-        border: '1px solid #c9a84c',
-        borderTop: '3px solid #c9a84c',
+        background: '#fff',
+        border: '1px solid #e2e8f0',
+        borderTop: '3px solid #dc2626',
         borderRadius: 16,
         width: '100%', maxWidth: 480,
         padding: 0,
-        boxShadow: '0 24px 60px rgba(0,0,0,0.7), 0 0 40px rgba(201,168,76,0.1)',
+        boxShadow: '0 24px 60px rgba(0,0,0,0.15)',
         fontFamily: 'Inter, sans-serif',
       }}>
         {/* Header */}
         <div style={{
           padding: '22px 28px 18px',
-          borderBottom: '1px solid #1a3a20',
+          borderBottom: '1px solid #e2e8f0',
           display: 'flex', alignItems: 'center', gap: 14,
         }}>
           <div style={{
@@ -61,10 +61,10 @@ function StockWarning({ items, onClose, onGoStock }) {
             animation: 'pulse 1.5s ease-in-out infinite',
           }}>⚠️</div>
           <div>
-            <div style={{ fontSize: 17, fontWeight: 800, color: '#f0ebe0', marginBottom: 3 }}>
+            <div style={{ fontSize: 17, fontWeight: 800, color: '#1e293b', marginBottom: 3 }}>
               Sklad Ogohlantirishi!
             </div>
-            <div style={{ fontSize: 12, color: '#9aab96' }}>
+            <div style={{ fontSize: 12, color: '#64748b' }}>
               {items.length} ta mahsulot kam qoldi (≤ 100 ta)
             </div>
           </div>
@@ -79,17 +79,17 @@ function StockWarning({ items, onClose, onGoStock }) {
             return (
               <div key={i} style={{
                 padding: '12px 14px',
-                background: qty === 0 ? 'rgba(220,38,38,0.08)' : 'rgba(0,0,0,0.2)',
-                border: `1px solid ${qty === 0 ? 'rgba(220,38,38,0.3)' : '#1a3a20'}`,
+                background: qty === 0 ? 'rgba(220,38,38,0.05)' : '#f8fafc',
+                border: `1px solid ${qty === 0 ? 'rgba(220,38,38,0.2)' : '#e2e8f0'}`,
                 borderRadius: 10,
                 marginBottom: 10,
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                   <div>
-                    <span style={{ fontWeight: 700, color: '#f0ebe0', fontSize: 14 }}>
+                    <span style={{ fontWeight: 700, color: '#1e293b', fontSize: 14 }}>
                       {item.product?.name || '—'}
                     </span>
-                    <span style={{ fontSize: 11, color: '#9aab96', marginLeft: 8 }}>
+                    <span style={{ fontSize: 11, color: '#64748b', marginLeft: 8 }}>
                       ({item.product?.category || '—'})
                     </span>
                   </div>
@@ -103,14 +103,14 @@ function StockWarning({ items, onClose, onGoStock }) {
                   </span>
                 </div>
                 {/* Progress bar */}
-                <div style={{ height: 5, background: '#1a3a20', borderRadius: 3, overflow: 'hidden' }}>
+                <div style={{ height: 5, background: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
                   <div style={{
                     height: '100%', width: `${pct}%`,
                     background: color,
                     borderRadius: 3, transition: 'width 0.5s',
                   }} />
                 </div>
-                <div style={{ fontSize: 10, color: '#4a6650', marginTop: 4 }}>
+                <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 4 }}>
                   {qty === 0 ? 'Yangilash zarur!' : `${100 - qty} ta sotilishi mumkin`}
                 </div>
               </div>
@@ -121,15 +121,15 @@ function StockWarning({ items, onClose, onGoStock }) {
         {/* Footer */}
         <div style={{
           padding: '16px 28px 24px',
-          borderTop: '1px solid #1a3a20',
+          borderTop: '1px solid #e2e8f0',
           display: 'flex', gap: 10,
         }}>
           <button
             onClick={onGoStock}
             style={{
               flex: 1, padding: '12px',
-              background: 'linear-gradient(135deg, #c9a84c, #8a6d28)',
-              color: '#0a0e06', border: 'none', borderRadius: 8,
+              background: '#2563eb',
+              color: '#fff', border: 'none', borderRadius: 8,
               fontWeight: 700, fontSize: 14, cursor: 'pointer',
               transition: 'opacity 0.2s',
             }}
@@ -143,12 +143,12 @@ function StockWarning({ items, onClose, onGoStock }) {
             style={{
               flex: 1, padding: '12px',
               background: 'transparent',
-              color: '#9aab96', border: '1px solid #1a3a20',
+              color: '#64748b', border: '1px solid #e2e8f0',
               borderRadius: 8, fontWeight: 600, fontSize: 14, cursor: 'pointer',
               transition: 'all 0.2s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#f0ebe0'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#9aab96'; }}
+            onMouseEnter={e => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.color = '#1e293b'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748b'; }}
           >
             ✕ Yopish
           </button>
@@ -272,7 +272,7 @@ export default function Layout({ onLogout }) {
               <div style={{ fontSize: 11, fontWeight: 700, color: '#f87171' }}>
                 {lowStockItems.length} ta mahsulot kam!
               </div>
-              <div style={{ fontSize: 10, color: '#9aab96' }}>Ko'rish uchun bosing</div>
+              <div style={{ fontSize: 10, color: '#64748b' }}>Ko'rish uchun bosing</div>
             </div>
           </button>
         )}
@@ -306,8 +306,8 @@ export default function Layout({ onLogout }) {
                 background: avatar ? 'transparent' : 'linear-gradient(135deg, var(--accent), var(--accent-g))',
                 color: '#fff', fontWeight: 800, fontSize: 14,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer', border: '2px solid rgba(14,165,233,0.4)',
-                boxShadow: '0 2px 8px rgba(14,165,233,0.25)',
+                cursor: 'pointer', border: '2px solid rgba(37,99,235,0.3)',
+                boxShadow: '0 2px 8px rgba(37,99,235,0.15)',
                 overflow: 'hidden',
               }}
               title="Profil"

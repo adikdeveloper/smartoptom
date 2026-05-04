@@ -28,13 +28,13 @@ function Login({ onLogin }) {
       <div style={{
         position: 'absolute', top: '-20%', left: '-10%',
         width: 500, height: 500, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(14,165,233,0.15) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%)',
         animation: 'pulse 4s ease-in-out infinite',
       }} />
       <div style={{
         position: 'absolute', bottom: '-15%', right: '-10%',
         width: 400, height: 400, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(37,99,235,0.1) 0%, transparent 70%)',
         animation: 'pulse 5s ease-in-out infinite reverse',
       }} />
       <style>{`
@@ -75,8 +75,8 @@ function Login({ onLogin }) {
                 style={{
                   width: 54, height: 54, borderRadius: 14,
                   objectFit: 'cover',
-                  boxShadow: '0 4px 20px rgba(14,165,233,0.4)',
-                  border: '2px solid rgba(14,165,233,0.3)',
+                  boxShadow: '0 4px 20px rgba(37,99,235,0.4)',
+                  border: '2px solid rgba(37,99,235,0.3)',
                 }}
               />
               <div style={{ textAlign: 'left' }}>
@@ -115,7 +115,7 @@ function Login({ onLogin }) {
                   color: '#fff', outline: 'none',
                   transition: 'border-color 0.2s',
                 }}
-                onFocus={e => e.target.style.borderColor = 'rgba(14,165,233,0.6)'}
+                onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
               />
             </div>
@@ -135,7 +135,7 @@ function Login({ onLogin }) {
                   color: '#fff', outline: 'none',
                   transition: 'border-color 0.2s',
                 }}
-                onFocus={e => e.target.style.borderColor = 'rgba(14,165,233,0.6)'}
+                onFocus={e => e.target.style.borderColor = 'rgba(37,99,235,0.6)'}
                 onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.12)'}
               />
             </div>
@@ -154,10 +154,10 @@ function Login({ onLogin }) {
               type="submit"
               style={{
                 marginTop: 8, padding: '14px', borderRadius: 12,
-                background: 'linear-gradient(135deg, #0ea5e9, #0284c7)',
+                background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
                 color: '#fff', fontWeight: 700, fontSize: 15,
                 border: 'none', cursor: 'pointer',
-                boxShadow: '0 4px 20px rgba(14,165,233,0.35)',
+                boxShadow: '0 4px 20px rgba(37,99,235,0.35)',
                 transition: 'all 0.2s',
               }}
               onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
